@@ -1,0 +1,35 @@
+name: Preprocessing Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python 3.12  # Menyesuaikan saran environment 3.12.7
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install Dependencies
+      run: |
+        pip install pandas numpy scikit-learn PySastrawi nltk
+
+    - name: Run Automation Preprocessing
+      run: |
+        # Pastikan file Python kamu menyimpan output ke folder 'preprocessing/namadataset_preprocessing/'
+        python "preprocessing/automate_Yoga-pratama.py"
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        # Perintah ini hanya akan jalan jika ada perubahan file (data baru)
+        git commit -m "Update preprocessed data [skip ci]" || echo "No changes to commit"
+        git push
